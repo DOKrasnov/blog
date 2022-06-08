@@ -15,7 +15,7 @@ export default class AddPostForm extends React.Component {
     var form = document.querySelector("form");
 
     const formData = new FormData(form);
-    fetch("http://localhost/blog/src/insertPost.php", {
+    fetch("https://629fd72c461f8173e4f1b3d9.mockapi.io/posts", {
       method: "POST",
       body: formData,
     })
@@ -58,21 +58,6 @@ export default class AddPostForm extends React.Component {
               required
             />
             <div className="valid-tooltip">Looks good!</div>
-          </div>
-
-          <div className="col-md-4 mb-3">
-            <label htmlFor="user">Автор</label>
-            <input
-              type="text"
-              className="form-control"
-              id="user"
-              name="user"
-              placeholder="Имя"
-              required
-            />
-            <div className="invalid-tooltip">
-              Please choose a unique and valid username.
-            </div>
           </div>
         </div>
 

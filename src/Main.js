@@ -3,6 +3,7 @@ import "./main.css";
 import { Article } from "./Article";
 import AddPostForm from "./AddPostForm";
 import { AddPostButton } from "./AddPostButton";
+import axios from "axios";
 
 export default class Main extends React.Component {
   state = {
@@ -11,43 +12,8 @@ export default class Main extends React.Component {
     posts: [],
   };
 
-  likePost = () => {
-    console.log("1");
-  };
-
-  deletePost = (item, index) => {
-    if (window.confirm(`Удалить ${item.title} ?`)) {
-      const deletePostID = {
-        post_id: index,
-      };
-      fetch("http://localhost/blog/src/deletePost.php", {
-        mode: "no-cors",
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json;charset=utf-8",
-        },
-        body: JSON.stringify(deletePostID),
-      })
-        .then((res) => res.json())
-        .then(
-          (result) => {
-            this.setState({
-              isLoaded: true,
-              posts: result,
-            });
-          },
-          (error) => {
-            this.setState({
-              isLoaded: true,
-              error,
-            });
-          }
-        );
-    }
-  };
-
-  componentDidMount() {
-    fetch("http://localhost/blog/src/getAllPosts.php")
+  getAllPosts = () => {
+    fetch("https://629fd72c461f8173e4f1b3d9.mockapi.io/posts")
       .then((res) => res.json())
       .then(
         (result) => {
@@ -63,6 +29,37 @@ export default class Main extends React.Component {
           });
         }
       );
+  };
+
+  likePost = (item, index) => {
+    const tempArr = this.state.posts;
+    tempArr[index].liked = !tempArr[index].liked;
+    this.setState({ posts: tempArr });
+    axios
+      .put(
+        `https://629fd72c461f8173e4f1b3d9.mockapi.io/posts/${item.post_id}`,
+        tempArr[index]
+      )
+      .then((response) =>
+        console.log("Post has been updated => ", response.data)
+      )
+      .catch((err) => console.log(err));
+  };
+
+  deletePost = (item) => {
+    if (window.confirm(`Удалить ${item.title} ?`)) {
+      axios
+        .delete(
+          `https://629fd72c461f8173e4f1b3d9.mockapi.io/posts/${item.post_id}`
+        )
+        .then((response) => console.log("Post has deleted => ", response.data))
+        .then(() => this.getAllPosts())
+        .catch((err) => console.log(err));
+    }
+  };
+
+  componentDidMount() {
+    this.getAllPosts();
   }
 
   render() {
@@ -80,12 +77,10 @@ export default class Main extends React.Component {
               return (
                 <Article
                   title={item.title}
-                  linkToArticle="#"
                   content={item.content}
-                  user={item.user}
-                  date={item.date}
-                  likePost={() => this.likePost(index)}
-                  deletePost={() => this.deletePost(item, index)}
+                  liked={item.liked}
+                  likePost={() => this.likePost(item, index)}
+                  deletePost={() => this.deletePost(item)}
                 />
               );
             })}
@@ -95,14 +90,3 @@ export default class Main extends React.Component {
     }
   }
 }
-
-// React Router -> Разбить на страницы
-// 1. Все посты
-// 2. Пост целиком на отдельной странице
-// 3. Добавить пост
-
-// Класс VS Hook
-
-// Почему нельзя менять напрямую в state без setState
-
-// При выносе из render не отрисовывается компонент
