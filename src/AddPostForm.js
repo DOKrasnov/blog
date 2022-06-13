@@ -1,63 +1,78 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Navigate } from "react-router-dom";
+import axios from "axios";
 
 export default class AddPostForm extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      formDidSend: false,
+  state = {
+    formDidSend: false,
+    postTitle: "",
+    postContent: "",
+    error: null,
+  };
+
+  addNewPost = (e) => {
+    e.preventDefault();
+
+    const newPost = {
+      title: this.state.postTitle,
+      content: this.state.postContent,
     };
-  }
 
-  fetchData = (event) => {
-    event.preventDefault();
-    var form = document.querySelector("form");
-
-    const formData = new FormData(form);
-    fetch("https://629fd72c461f8173e4f1b3d9.mockapi.io/posts", {
-      method: "POST",
-      body: formData,
-    })
-      .then((response) => {
-        return response.text();
+    axios
+      .post("https://629fd72c461f8173e4f1b3d9.mockapi.io/posts", newPost)
+      .then(() => {
+        this.setState({
+          formDidSend: true,
+        });
       })
-      .then((text) => {
-        this.setState({ formDidSend: true });
+      .catch((error) => {
+        this.setState({
+          error,
+        });
       });
-    return false;
+  };
+
+  inputTitleHandler = (e) => {
+    this.setState({
+      postTitle: e.target.value,
+    });
+  };
+
+  inputContentHandler = (e) => {
+    this.setState({
+      postContent: e.target.value,
+    });
   };
 
   render() {
+    if (this.state.error) {
+      return this.state.error.message;
+    }
+
     return this.state.formDidSend ? (
       <Navigate to="/" />
     ) : (
-      <form onSubmit={this.fetchData} className="needs-validation" noValidate>
+      <form onSubmit={this.addNewPost}>
         <div className="form-row">
           <div className="col-md-4 mb-3">
-            <label htmlFor="title">Заголовок</label>
             <input
               type="text"
-              className="form-control"
-              id="title"
               name="title"
+              value={this.state.postTitle}
               placeholder="Заголовок"
-              required
+              onChange={this.inputTitleHandler}
             />
-            <div className="valid-tooltip">Looks good!</div>
           </div>
 
           <div className="col-md-4 mb-3">
-            <label htmlFor="content">Текст новости</label>
             <textarea
               type="text"
-              className="form-control"
-              id="content"
               name="content"
+              value={this.state.postContent}
               placeholder="Текст вашей новости"
-              required
+              onChange={this.inputContentHandler}
             />
-            <div className="valid-tooltip">Looks good!</div>
           </div>
         </div>
 

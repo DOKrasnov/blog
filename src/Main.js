@@ -13,22 +13,21 @@ export default class Main extends React.Component {
   };
 
   getAllPosts = () => {
-    fetch("https://629fd72c461f8173e4f1b3d9.mockapi.io/posts")
-      .then((res) => res.json())
-      .then(
-        (result) => {
-          this.setState({
-            isLoaded: true,
-            posts: result,
-          });
-        },
-        (error) => {
-          this.setState({
-            isLoaded: true,
-            error,
-          });
-        }
-      );
+    axios
+      .get("https://629fd72c461f8173e4f1b3d9.mockapi.io/posts")
+      .then((response) => {
+        this.setState({
+          isLoaded: true,
+          posts: response.data,
+        });
+      })
+
+      .catch((error) => {
+        this.setState({
+          isLoaded: true,
+          error,
+        });
+      });
   };
 
   likePost = (item, index) => {
@@ -43,18 +42,27 @@ export default class Main extends React.Component {
       .then((response) =>
         console.log("Post has been updated => ", response.data)
       )
-      .catch((err) => console.log(err));
+      .catch((error) => {
+        this.setState({
+          error,
+        });
+      });
   };
 
   deletePost = (item) => {
     if (window.confirm(`Удалить ${item.title} ?`)) {
+      this.setState({ isLoaded: false });
       axios
         .delete(
           `https://629fd72c461f8173e4f1b3d9.mockapi.io/posts/${item.post_id}`
         )
         .then((response) => console.log("Post has deleted => ", response.data))
         .then(() => this.getAllPosts())
-        .catch((err) => console.log(err));
+        .catch((error) => {
+          this.setState({
+            error,
+          });
+        });
     }
   };
 
