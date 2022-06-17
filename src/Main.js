@@ -3,6 +3,7 @@ import "./main.css";
 import { Article } from "./Article";
 import AddPostForm from "./AddPostForm";
 import { AddPostButton } from "./AddPostButton";
+import { EditPostForm } from "./EditPostForm";
 import axios from "axios";
 
 export default class Main extends React.Component {
@@ -10,6 +11,18 @@ export default class Main extends React.Component {
     error: null,
     isLoaded: false,
     posts: [],
+    showEditPostForm: false,
+    selectedPost: {},
+  };
+
+  handlerShowEditPostForm = (e) => {
+    this.setState({ showEditPostForm: !this.state.showEditPostForm });
+  };
+
+  handlerSelectedPost = (selectedPost) => {
+    this.setState({
+      selectedPost,
+    });
   };
 
   getAllPosts = () => {
@@ -66,35 +79,50 @@ export default class Main extends React.Component {
     }
   };
 
+  savePost = () => {
+    console.log("1");
+  };
+
   componentDidMount() {
     this.getAllPosts();
   }
 
   render() {
-    const { error, posts, isLoaded } = this.state;
-    if (error) {
-      return <div>Ошибка: {error.message}</div>;
-    } else if (!isLoaded) {
-      return <div>Загрузка...</div>;
-    } else {
+    const { error, posts, isLoaded, showEditPostForm } = this.state;
+
+    if (error) return <h1>{error.message}</h1>;
+
+    if (!isLoaded) return <h1>Загружаю данные...</h1>;
+
+    const allPosts = posts.map((item, index) => {
       return (
-        <main>
-          <AddPostButton />
-          <section className="container-fluid">
-            {posts.map((item, index) => {
-              return (
-                <Article
-                  title={item.title}
-                  content={item.content}
-                  liked={item.liked}
-                  likePost={() => this.likePost(item, index)}
-                  deletePost={() => this.deletePost(item)}
-                />
-              );
-            })}
-          </section>
-        </main>
+        <Article
+          title={item.title}
+          content={item.content}
+          liked={item.liked}
+          likePost={() => this.likePost(item, index)}
+          showEditPost={() => this.handlerShowEditPostForm(item)}
+          deletePost={() => this.deletePost(item)}
+          handlerSelectedPost={() => this.handlerSelectedPost(item)}
+        />
       );
-    }
+    });
+
+    return (
+      <main>
+        <AddPostButton />
+
+        {showEditPostForm && (
+          <EditPostForm
+            selectedPost={this.state.selectedPost}
+            getAllPosts={this.getAllPosts}
+          />
+        )}
+
+        <section className="container-fluid">
+          <div>{allPosts}</div>
+        </section>
+      </main>
+    );
   }
 }

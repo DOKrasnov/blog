@@ -15,6 +15,7 @@ function App() {
       <Header />
       <Routes>
         <Route path="/addpost" element={<AddPostForm />} />
+
         <Route path="/" element={<Main />} />
       </Routes>
     </div>
