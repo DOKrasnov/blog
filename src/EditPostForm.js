@@ -1,7 +1,8 @@
 import axios from "axios";
 import { useState } from "react";
 
-export const EditPostForm = ({ selectedPost, getAllPosts }) => {
+export const EditPostForm = (props) => {
+  const { selectedPost, getAllPosts } = props;
   const [title, setTitle] = useState(selectedPost.title);
   const [content, setContent] = useState(selectedPost.content);
 
@@ -11,11 +12,11 @@ export const EditPostForm = ({ selectedPost, getAllPosts }) => {
   };
   console.log(changedPost);
 
-  const inputTitleHandler = (e) => {
+  const handleChangeTitle = (e) => {
     setTitle(e.target.value);
   };
 
-  const inputContentHandler = (e) => {
+  const handleChangeContent = (e) => {
     setContent(e.target.value);
   };
 
@@ -42,7 +43,7 @@ export const EditPostForm = ({ selectedPost, getAllPosts }) => {
           type="text"
           name="title"
           value={title}
-          onChange={inputTitleHandler}
+          onChange={handleChangeTitle}
         />
       </div>
 
@@ -51,7 +52,7 @@ export const EditPostForm = ({ selectedPost, getAllPosts }) => {
           type="textarea"
           name="content"
           value={content}
-          onChange={inputContentHandler}
+          onChange={handleChangeContent}
         />
       </div>
 

@@ -1,7 +1,8 @@
 import "./App.css";
-import Header from "./Header";
-import Main from "./Main";
-import AddPostForm from "./AddPostForm";
+import { Header } from "./components/header/Header";
+import { BlogPosts } from "./BlogPosts";
+import { AddPostForm } from "./AddPostForm";
+import { useSelector } from "react-redux";
 import {
   BrowserRouter as Router,
   Switch,
@@ -10,15 +11,17 @@ import {
 } from "react-router-dom";
 
 function App() {
+  const posts = useSelector(state => state.posts);
+
   return (
-    <div className="App">
+    <>
       <Header />
       <Routes>
         <Route path="/addpost" element={<AddPostForm />} />
 
-        <Route path="/" element={<Main />} />
+        <Route path="/" element={<BlogPosts posts={ posts } />} />
       </Routes>
-    </div>
+    </>
   );
 }
 

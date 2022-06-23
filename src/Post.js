@@ -1,10 +1,10 @@
-import "./main.css";
+import "./Post.css";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import CreateIcon from "@mui/icons-material/Create";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Navigate, useNavigate } from "react-router-dom";
 
-export const Article = ({
+export const Post = ({
   id,
   title,
   content,
@@ -12,17 +12,19 @@ export const Article = ({
   likePost,
   deletePost,
   showEditPost,
-  handlerSelectedPost,
+  handleSelectedPost,
 }) => {
+
+  // перенести в css
   const likeIconColor = liked ? "red" : "grey";
 
   const editPost = () => {
-    handlerSelectedPost();
+    handleSelectedPost();
     showEditPost();
   };
 
   return (
-    <article key={id}>
+    <article>
       <div className="title">{title}</div>
 
       <div className="content">

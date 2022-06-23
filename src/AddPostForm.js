@@ -1,67 +1,61 @@
-import React from "react";
-import ReactDOM from "react-dom";
+import { React, useState } from "react";
+import { ReactDOM } from "react-dom";
 import { Navigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import axios from "axios";
 
-export default class AddPostForm extends React.Component {
-  state = {
-    formDidSend: false,
-    postTitle: "",
-    postContent: "",
-    error: null,
-  };
+export const AddPostForm = () => {
 
-  addNewPost = (e) => {
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
+  const [formDidSend, setFormDidSend] = useState(false);
+  const [error, setError] = useState(null);
+
+ const addNewPost = (e) => {
     e.preventDefault();
 
     const newPost = {
-      title: this.state.postTitle,
-      content: this.state.postContent,
+      title,
+      content,
     };
 
     axios
       .post("https://629fd72c461f8173e4f1b3d9.mockapi.io/posts", newPost)
       .then(() => {
-        this.setState({
-          formDidSend: true,
-        });
-      })
+        setFormDidSend(true);
+        })
+      
       .catch((error) => {
-        this.setState({
-          error,
-        });
-      });
+        setError(error);
+        })
+      
   };
 
-  inputTitleHandler = (e) => {
-    this.setState({
-      postTitle: e.target.value,
-    });
+  const handleChangeTitle = (e) => {
+   setTitle(e.target.value);
   };
 
-  inputContentHandler = (e) => {
-    this.setState({
-      postContent: e.target.value,
-    });
+  const handleChangeContent = (e) => {
+    setContent(e.target.value);
   };
 
-  render() {
-    if (this.state.error) {
-      return this.state.error.message;
+  
+    if (error) {
+      return error.message;
     }
 
-    return this.state.formDidSend ? (
+    return formDidSend ? (
       <Navigate to="/" />
     ) : (
-      <form onSubmit={this.addNewPost}>
+      <form onSubmit={addNewPost}>
         <div className="form-row">
           <div className="col-md-4 mb-3">
             <input
               type="text"
               name="title"
-              value={this.state.postTitle}
+              value={title}
               placeholder="Заголовок"
-              onChange={this.inputTitleHandler}
+              onChange={handleChangeTitle}
             />
           </div>
 
@@ -69,9 +63,9 @@ export default class AddPostForm extends React.Component {
             <textarea
               type="text"
               name="content"
-              value={this.state.postContent}
+              value={content}
               placeholder="Текст вашей новости"
-              onChange={this.inputContentHandler}
+              onChange={handleChangeContent}
             />
           </div>
         </div>
@@ -81,5 +75,5 @@ export default class AddPostForm extends React.Component {
         </button>
       </form>
     );
-  }
+  
 }

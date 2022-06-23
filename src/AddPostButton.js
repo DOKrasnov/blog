@@ -1,3 +1,4 @@
+import "./AddPostButton.css";
 import { useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 
@@ -11,8 +12,10 @@ export const AddPostButton = () => {
   };
 
   return (
-    <button onClick={clickHandler}>
+    <div className="add-post-button-wrapper">
+    <button className="add-post-button" onClick={clickHandler}>
       {isButtonPress ? "Added" : "Добавить пост!"}
     </button>
+    </div>
   );
 };
