@@ -11,7 +11,7 @@ import {
 } from "react-router-dom";
 
 function App() {
-  const posts = useSelector(state => state.posts);
+  const posts = useSelector((state) => state.getPostsReducer.posts);
 
   return (
     <>
@@ -19,7 +19,7 @@ function App() {
       <Routes>
         <Route path="/addpost" element={<AddPostForm />} />
 
-        <Route path="/" element={<BlogPosts posts={ posts } />} />
+        <Route path="/" element={<BlogPosts posts={posts} />} />
       </Routes>
     </>
   );

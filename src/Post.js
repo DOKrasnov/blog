@@ -5,22 +5,20 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { Navigate, useNavigate } from "react-router-dom";
 
 export const Post = ({
-  id,
   title,
   content,
   liked,
   likePost,
   deletePost,
-  showEditPost,
+  handleShowEditForm,
   handleSelectedPost,
 }) => {
-
   // перенести в css
   const likeIconColor = liked ? "red" : "grey";
 
   const editPost = () => {
     handleSelectedPost();
-    showEditPost();
+    handleShowEditForm();
   };
 
   return (

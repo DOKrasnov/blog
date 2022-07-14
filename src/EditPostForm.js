@@ -1,10 +1,13 @@
 import axios from "axios";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { getPostsAction } from "./store/getPosts";
 
-export const EditPostForm = (props) => {
-  const { selectedPost, getAllPosts } = props;
+export const EditPostForm = (selectedPost, getAllPosts) => {
   const [title, setTitle] = useState(selectedPost.title);
   const [content, setContent] = useState(selectedPost.content);
+
+  const dispatch = useDispatch();
 
   const changedPost = {
     title,
@@ -28,7 +31,7 @@ export const EditPostForm = (props) => {
         `https://629fd72c461f8173e4f1b3d9.mockapi.io/posts/${selectedPost.post_id}`,
         changedPost
       )
-      .then(() => getAllPosts())
+      .then(() => dispatch(getPostsAction()))
       .catch((error) => {
         console.log(error);
       });
